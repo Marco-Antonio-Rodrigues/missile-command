@@ -4,24 +4,35 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+from app.draw import draw
+pg.init()
 
+pg.mouse.set_cursor(*pg.cursors.diamond)
+
+INFO = pg.display.Info()
+
+WIDTH = int(INFO.current_h * 0.8)
+HEIGHT = int(INFO.current_h * 0.8)
+
+display = (WIDTH, HEIGHT)
+CANVAS = pg.display.set_mode(display, DOUBLEBUF|OPENGL)
+
+CLOCK = pg.time.Clock()
+
+pg.display.set_caption('Missile Command')
+
+gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
+
+glTranslatef(0.0, 0.0, -5)
 
 def main():
-    pg.init()
-    display = (1680, 1050)
-    pg.display.set_mode(display, DOUBLEBUF|OPENGL)
-
-    gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
-
-    glTranslatef(0.0, 0.0, -5)
-
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
                 quit()
 
-        glRotatef(1, 1, 1, 1)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+        draw()
         pg.display.flip()
-        pg.time.wait(10)
+        CLOCK.tick(60)
