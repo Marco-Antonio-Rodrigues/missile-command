@@ -3,7 +3,7 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-from app.explosion import Explosion
+from app.explosion import Explosion, list_explosion
 
 #configurações iniciais
 pg.init()
@@ -27,12 +27,12 @@ def tela_for_mundo(x_tela, y_tela):
     y_mundo = y_tela_centro * (50 / HEIGHT)
     return x_mundo, y_mundo
 
-list_explosion = []
-
 def draw(x,y):
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT) #limpa a tela
+    
     for explosion in list_explosion:
         explosion.update()
+        
     pg.display.flip()#atualiza toda a tela
 
 def main():
@@ -47,9 +47,7 @@ def main():
             elif event.type == pg.MOUSEBUTTONDOWN:
                 x, y = pg.mouse.get_pos()
                 x, y = tela_for_mundo(x,HEIGHT-y)
-                explosion = Explosion(x=x,y=y)
-                explosion.draw()
-                list_explosion.append(explosion)
+                Explosion(x=x,y=y)
         draw(x,HEIGHT-y)
         CLOCK.tick(60)
         
