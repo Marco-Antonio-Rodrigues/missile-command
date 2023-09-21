@@ -6,7 +6,7 @@ from OpenGL.GLU import *
 from time import sleep
 from random import randint
 
-from app.explosion import Explosion
+from app.explosion import Explosion,list_explosion
 from app.asteroids import Asteroids
 
 #configurações iniciais
@@ -33,7 +33,7 @@ def draw(x,y):
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT) #limpa a tela
     for asteroid in Asteroids.list_asteroids:
         asteroid.update()
-    for explosion in Explosion.list_explosion:
+    for explosion in list_explosion:
         explosion.update()
         
     pg.display.flip()#atualiza toda a tela
