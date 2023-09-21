@@ -7,18 +7,18 @@ from OpenGL.GLU import *
 import math
 import random
   
-  
-  
+list_asteroids = []
+
+
 class Asteroids():
   
-  list_asteroids = []
   
   def __init__(self):
     self.x = random.randint(-22,22)
     self.y = 25
     self.ray = 0.2 * random.randint(0,5)
     self.edges = 36
-    self.list_asteroids.append(self)
+    list_asteroids.append(self)
     
   def draw(self,pos_x=None,pos_y=None,ray=None,edges = None):
     if pos_x:
@@ -54,5 +54,5 @@ class Asteroids():
       self.draw()
     else:
       self.ray = 0
-      self.list_asteroids.remove(self)
+      list_asteroids.remove(self)
     

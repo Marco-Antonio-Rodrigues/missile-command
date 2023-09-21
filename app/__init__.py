@@ -7,7 +7,7 @@ from time import sleep
 from random import randint
 
 from app.explosion import Explosion,list_explosion
-from app.asteroids import Asteroids
+from app.asteroids import Asteroids, list_asteroids
 
 #configurações iniciais
 pg.init()
@@ -31,7 +31,7 @@ def tela_for_mundo(x_tela, y_tela):
 
 def draw(x,y):
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT) #limpa a tela
-    for asteroid in Asteroids.list_asteroids:
+    for asteroid in list_asteroids:
         asteroid.update()
     for explosion in list_explosion:
         explosion.update()
@@ -41,10 +41,10 @@ def draw(x,y):
 def main():
     x = 0
     y = 0
-    cond = 50 #Dificuldade, quanto mais perto do 0, mais asteroids aparecem
-    
+    cond = 45 #Dificuldade, quanto mais perto do 0, mais asteroids aparecem
+    global list_asteroids
     while True:
-        if len(Asteroids.list_asteroids) < 20 and randint(-cond,cond) == 0: 
+        if len(list_asteroids) < 20 and randint(-cond,cond) == 0: 
             Asteroids()
             
         for event in pg.event.get():
