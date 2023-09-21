@@ -16,15 +16,13 @@ WIDTH = 600
 display = (WIDTH, HEIGHT)
 CANVAS = pg.display.set_mode(display, DOUBLEBUF|OPENGL|RESIZABLE)
 
-gluPerspective(45, (WIDTH/HEIGHT), 0.1, 50.0)
-glTranslatef(0.0, 0.0, -5)
 glOrtho(-10,10,-10,10,-1,1)
 
 def tela_for_mundo(x_tela, y_tela):
     x_tela_centro = x_tela - WIDTH / 2
     y_tela_centro = y_tela - HEIGHT / 2
-    x_mundo = x_tela_centro * (50 / WIDTH)
-    y_mundo = y_tela_centro * (50 / HEIGHT)
+    x_mundo = x_tela_centro * (20 / WIDTH)
+    y_mundo = y_tela_centro * (20 / HEIGHT)
     return x_mundo, y_mundo
 
 def draw(x,y):
