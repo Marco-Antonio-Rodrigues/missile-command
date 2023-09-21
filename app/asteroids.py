@@ -14,9 +14,9 @@ class Asteroids():
   
   
   def __init__(self):
-    self.x = random.randint(-22,22)
-    self.y = 25
-    self.ray = 0.2 * random.randint(0,5)
+    self.x = random.randint(-10,10)
+    self.y = 10
+    self.ray = 0.2 * random.randint(0,2)
     self.edges = 36
     list_asteroids.append(self)
     
