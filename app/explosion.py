@@ -4,6 +4,7 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+
 import math
 import random
 
@@ -38,7 +39,7 @@ class Explosion():
     glTranslatef(pos_x,pos_y,0)
     glScalef(self.ray/2,self.ray/2,1)           #matriz de escala uniforme para triplicar o tamanho do hexÃ¡gono
     
-    glBegin(GL_POLYGON);
+    glBegin(GL_POLYGON)
     for i in range(0,self.edges):
         ang = i * (2.0* math.pi/self.edges)
         x = math.cos(ang)
@@ -57,3 +58,7 @@ class Explosion():
     else:
       list_explosion.remove(self)
       del self
+  
+  def Colide(self, asteroide):
+    distance = math.sqrt((self.x - asteroide.x) ** 2 + (self.y - asteroide.y) ** 2)
+    return distance < self.ray

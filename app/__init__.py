@@ -39,10 +39,12 @@ def draw(x,y):
     pg.display.flip()#atualiza toda a tela
 
 def main():
+    pontos = 0
     x = 0
     y = 0
     cond = 45 #Dificuldade, quanto mais perto do 0, mais asteroids aparecem
     global list_asteroids
+    global list_explosion
     while True:
         if len(list_asteroids) < 20 and randint(-cond,cond) == 0: 
             Asteroids()
@@ -56,6 +58,21 @@ def main():
                 x, y = tela_for_mundo(x,HEIGHT-y)
                 Explosion(x=x,y=y)
                 
+
+        asteroids_to_remove = []
+        
+        for explosionn in list_explosion:
+            for asteroidd in list_asteroids:
+                if explosionn.Colide(asteroidd):
+                    pontos += 1
+                    print(pontos)
+                    asteroids_to_remove.append(asteroidd)
+                
+            
+        for asterroid in asteroids_to_remove:
+            list_asteroids.remove(asterroid)        
+        
+        
         draw(x,HEIGHT-y)
         CLOCK.tick(60)
         
