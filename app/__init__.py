@@ -61,16 +61,20 @@ def main():
 
         asteroids_to_remove = []
         
-        for explosionn in list_explosion:
-            for asteroidd in list_asteroids:
-                if explosionn.Colide(asteroidd):
+        for explosion in list_explosion:
+            for asteroid in list_asteroids:
+                if explosion.Colide(asteroid):
+                    asteroids_to_remove.append(asteroid)
                     pontos += 1
                     print(pontos)
-                    asteroids_to_remove.append(asteroidd)
+                    
                 
             
-        for asterroid in asteroids_to_remove:
-            list_asteroids.remove(asterroid)        
+        for asteroid in asteroids_to_remove:
+            x = asteroid.x
+            y = asteroid.y
+            Explosion(x=x, y=y)
+            list_asteroids.remove(asteroid)        
         
         
         draw(x,HEIGHT-y)

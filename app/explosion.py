@@ -47,7 +47,6 @@ class Explosion():
         glVertex2f(x,y)
     
     glEnd()
-    
     glPopMatrix()             #carregando a Ãºltima matriz de transformaÃ§Ã£o salva
     glFlush() #Todas as instruções anteriores apenas indicaram o que deve ser feito. Essa Ã© a ordem pra GPU redesenhar com as informaÃ§Ãµes enviadas
     
