@@ -51,7 +51,12 @@ class Asteroids():
     glEnd()
 
     glFlush() #Todas as instruções anteriores apenas indicaram o que deve ser feito. Essa Ã© a ordem pra GPU redesenhar com as informaÃ§Ãµes enviadas
-    
+  
+  def Colide(self):
+    if self.y <= -5.4:
+      return True
+    return False
+  
   def update(self):
     if self.y > -5.5:
       self.y-=0.01

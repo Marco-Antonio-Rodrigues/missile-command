@@ -6,6 +6,7 @@ from OpenGL.GLU import *
 from time import sleep
 from random import randint
 
+
 from app.explosion import Explosion, list_explosion
 from app.asteroids import Asteroids, list_asteroids
 from app.ground import Ground
@@ -33,15 +34,25 @@ def tela_for_mundo(x_tela, y_tela):
 def draw(x,y):
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT) #limpa a tela
     Ground()
-    for asteroid in list_asteroids:
+    
+    for asteroid in list_asteroids: #Atualiza o Status dos Asteroides
         asteroid.update()
-    for explosion in list_explosion:
-        explosion.update()
         
+    for explosion in list_explosion: #Atualiza o Status das Explosoes
+        explosion.update()
+    
+    for explosion in list_explosion:            #Checa se uma explosão atingiu um asteroide
+        for asteroid in list_asteroids:
+            if explosion.Colide(asteroid):
+                list_asteroids.remove(asteroid)#Remove asteroide atingido
+                
+    for asteroid in list_asteroids:
+        if asteroid.Colide():
+            Explosion(asteroid.x, asteroid.y)
+
     pg.display.flip()#atualiza toda a tela
 
 def main():
-    pontos = 0
     x = 0
     y = 0
     cond = 60 #Dificuldade, quanto mais perto do 0, mais asteroids aparecem
@@ -60,24 +71,6 @@ def main():
                 x, y = tela_for_mundo(x,HEIGHT-y)
                 if y > -5:
                     Explosion(x=x,y=y)
-                
-
-        asteroids_to_remove = []
-        
-        for explosion in list_explosion:            #Checa se uma explosão atingiu um asteroide
-            for asteroid in list_asteroids:
-                if explosion.Colide(asteroid):
-                    asteroids_to_remove.append(asteroid)
-                    pontos += 1
-                    print(pontos)
-                    
-                
-            
-        for asteroid in asteroids_to_remove:
-            x = asteroid.x
-            y = asteroid.y
-            Explosion(x=x, y=y)                 #Adiciona explosão ao local do asteroide atingido
-            list_asteroids.remove(asteroid)     #Remove asteroide atingido
         
         
         draw(x,HEIGHT-y)
