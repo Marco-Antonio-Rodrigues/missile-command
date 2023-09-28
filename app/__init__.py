@@ -6,8 +6,9 @@ from OpenGL.GLU import *
 from time import sleep
 from random import randint
 
-from app.explosion import Explosion,list_explosion
+from app.explosion import Explosion, list_explosion
 from app.asteroids import Asteroids, list_asteroids
+from app.ground import Ground
 
 #configurações iniciais
 pg.init()
@@ -31,6 +32,7 @@ def tela_for_mundo(x_tela, y_tela):
 
 def draw(x,y):
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT) #limpa a tela
+    Ground()
     for asteroid in list_asteroids:
         asteroid.update()
     for explosion in list_explosion:
@@ -42,7 +44,7 @@ def main():
     pontos = 0
     x = 0
     y = 0
-    cond = 45 #Dificuldade, quanto mais perto do 0, mais asteroids aparecem
+    cond = 60 #Dificuldade, quanto mais perto do 0, mais asteroids aparecem
     global list_asteroids
     global list_explosion
     while True:
@@ -56,12 +58,13 @@ def main():
             elif event.type == pg.MOUSEBUTTONDOWN:
                 x, y = pg.mouse.get_pos()
                 x, y = tela_for_mundo(x,HEIGHT-y)
-                Explosion(x=x,y=y)
+                if y > -5:
+                    Explosion(x=x,y=y)
                 
 
         asteroids_to_remove = []
         
-        for explosion in list_explosion:
+        for explosion in list_explosion:            #Checa se uma explosão atingiu um asteroide
             for asteroid in list_asteroids:
                 if explosion.Colide(asteroid):
                     asteroids_to_remove.append(asteroid)
@@ -73,8 +76,8 @@ def main():
         for asteroid in asteroids_to_remove:
             x = asteroid.x
             y = asteroid.y
-            Explosion(x=x, y=y)
-            list_asteroids.remove(asteroid)        
+            Explosion(x=x, y=y)                 #Adiciona explosão ao local do asteroide atingido
+            list_asteroids.remove(asteroid)     #Remove asteroide atingido
         
         
         draw(x,HEIGHT-y)

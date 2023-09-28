@@ -14,7 +14,7 @@ class Asteroids():
   
   
   def __init__(self):
-    self.x = random.randint(-10,10)
+    self.x = random.randint(-9,9)
     self.y = 10
     self.ray = 0.2 * random.randint(0,2)
     self.edges = 36
@@ -35,6 +35,9 @@ class Asteroids():
         
     
     glColor((1,1,1))
+    
+          
+    
     glBegin(GL_TRIANGLE_FAN)
     glVertex3f(pos_x,pos_y,1)
     for aresta in range(0,self.edges):
@@ -46,10 +49,11 @@ class Asteroids():
     pos_y = self.ray*math.sin(0)
     glVertex3f(pos_x+self.x, pos_y+self.y ,1)
     glEnd()
+
     glFlush() #Todas as instruções anteriores apenas indicaram o que deve ser feito. Essa Ã© a ordem pra GPU redesenhar com as informaÃ§Ãµes enviadas
     
   def update(self):
-    if self.y > -10:
+    if self.y > -5.5:
       self.y-=0.01
       self.draw()
     else:
