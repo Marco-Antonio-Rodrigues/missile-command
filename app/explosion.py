@@ -51,43 +51,6 @@ class Explosion():
     glPopMatrix()#carregando a última matriz de transformaÃ§Ã£o salva
     glFlush() #Todas as instruções anteriores apenas indicaram o que deve ser feito. Essa Ã© a ordem pra GPU redesenhar com as informaÃ§Ãµes enviadas
   
-  def half_draw(self,pos_x=None,pos_y=None,ray=None,edges = None):
-    if pos_x:
-      self.x = pos_x
-    if pos_y:
-      self.y = pos_y
-    if ray:
-      self.ray = ray
-    if edges:
-      self.edges = edges
-        
-    pos_x = self.x
-    pos_y = self.y
-    
-    ang_start = 0
-    ang_end = math.pi
-    ang_delta = (ang_end - ang_start)/self.edges
-    
-    colors_list = [(1,0,0),(1,1,0),(1,1,1),(1,0.8,0),(1,0.6,0),(1,0.4,0)]
-    number_random = random.randint(0,len(colors_list)-1)    
-    glColor(colors_list[number_random])
-  
-    glPushMatrix() #salvando a atual matriz de transformaÃ§Ã£o
-    glTranslatef(pos_x,pos_y,0)
-    glScalef(self.ray/2,self.ray/2,1)           #matriz de escala uniforme para triplicar o tamanho do hexÃ¡gono
-    
-    glBegin(GL_POLYGON)
-    for i in range(0,self.edges):
-        ang = ang_start + i * ang_delta
-        x = self.ray * math.cos(ang)
-        y = self.ray * math.sin(ang)
-        glVertex2f(x,y)
-    
-    glEnd()
-    glPopMatrix()             #carregando a Ãºltima matriz de transformaÃ§Ã£o salva
-    glFlush() #Todas as instruções anteriores apenas indicaram o que deve ser feito. Essa Ã© a ordem pra GPU redesenhar com as informaÃ§Ãµes enviadas
-  
-    
   def update(self):
     if self.ray < 1:
       self.ray+=0.002
@@ -95,7 +58,3 @@ class Explosion():
     else:
       list_explosion.remove(self)
       del self
-  
-  def Colide(self, asteroide):
-    distance = math.sqrt((self.x - asteroide.x) ** 2 + (self.y - asteroide.y) ** 2)
-    return distance < self.ray

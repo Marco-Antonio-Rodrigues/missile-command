@@ -6,7 +6,9 @@ from OpenGL.GLU import *
 
 import math
 import random
-  
+from app.colision import Colision
+
+
 list_asteroids = []
 
 
@@ -16,7 +18,7 @@ class Asteroids():
   def __init__(self):
     self.x = random.randint(-9,9)
     self.y = 10
-    self.ray = 0.2 * random.randint(0,2)
+    self.ray = 0.2 * random.randint(1,2)
     self.edges = 36
     list_asteroids.append(self)
     
@@ -33,10 +35,7 @@ class Asteroids():
     pos_x = self.x
     pos_y = self.y
         
-    
     glColor((1,1,1))
-    
-          
     
     glBegin(GL_TRIANGLE_FAN)
     glVertex3f(pos_x,pos_y,1)
@@ -52,16 +51,23 @@ class Asteroids():
 
     glFlush() #Todas as instruções anteriores apenas indicaram o que deve ser feito. Essa Ã© a ordem pra GPU redesenhar com as informaÃ§Ãµes enviadas
   
-  def Colide(self):
-    if self.y <= -5.4:
-      return True
+  def Colide(self,x=None,y=None,ray=None):
+    if x and y and ray:
+      distance = math.sqrt((self.x - x) ** 2 + (self.y - y) ** 2)
+      if distance < self.ray or distance < ray:
+        Colision(self.x,self.y)
+        list_asteroids.remove(self)#Remove asteroide atingido
+        del self
+        return True
     return False
   
   def update(self):
-    if self.y > -5.5:
-      self.y-=0.01
+    if self.y > -6.5:
+      self.y-=0.02
       self.draw()
+      return False
     else:
-      self.ray = 0
-      list_asteroids.remove(self)
-    
+      Colision(self.x,self.y-self.ray)
+      list_asteroids.remove(self)#Remove asteroide atingido
+      del self
+      return True

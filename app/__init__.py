@@ -9,7 +9,8 @@ from random import randint
 
 from app.explosion import Explosion, list_explosion
 from app.asteroids import Asteroids, list_asteroids
-from app.ground import Ground
+from app.colision import list_colision
+from app.scenario import scenario
 
 #configurações iniciais
 pg.init()
@@ -17,12 +18,15 @@ pg.display.set_caption('Missile Command')
 pg.mouse.set_cursor(*pg.cursors.diamond)
 CLOCK = pg.time.Clock()
 
-HEIGHT = 600
 WIDTH = 600
+HEIGHT = 600
+WIDTH_WORLD = 20
+HEIGHT_WORLD = 20
+
 display = (WIDTH, HEIGHT)
 CANVAS = pg.display.set_mode(display, DOUBLEBUF|OPENGL|RESIZABLE)
 
-glOrtho(-10,10,-10,10,-1,1)
+glOrtho(-WIDTH_WORLD/2,WIDTH_WORLD/2,-HEIGHT_WORLD/2,HEIGHT_WORLD/2,-1,1)
 
 def tela_for_mundo(x_tela, y_tela):
     x_tela_centro = x_tela - WIDTH / 2
@@ -31,32 +35,38 @@ def tela_for_mundo(x_tela, y_tela):
     y_mundo = y_tela_centro * (20 / HEIGHT)
     return x_mundo, y_mundo
 
+asteroids_killed = 0
+life = 100
+
 def draw(x,y):
+    global asteroids_killed, life
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT) #limpa a tela
-    Ground()
+    scenario(WIDTH_WORLD/2,HEIGHT_WORLD/2)
     
-    for asteroid in list_asteroids: #Atualiza o Status dos Asteroides
-        asteroid.update()
-        
     for explosion in list_explosion: #Atualiza o Status das Explosoes
         explosion.update()
     
-    for explosion in list_explosion:            #Checa se uma explosão atingiu um asteroide
-        for asteroid in list_asteroids:
-            if explosion.Colide(asteroid):
-                list_asteroids.remove(asteroid)#Remove asteroide atingido
-                del asteroid
-                
-    for asteroid in list_asteroids:
-        if asteroid.Colide():
-            Explosion(asteroid.x, asteroid.y)
-
+    for asteroid in list_asteroids: #Atualiza o Status dos Asteroides
+        if asteroid.update():
+            life -= 20
+            print(life)
+  
+    for colision in list_colision: #Atualiza o Status das colisões
+        colision.update()
+    
     pg.display.flip()#atualiza toda a tela
+    
+    for asteroid in list_asteroids: #Checa se uma explosão atingiu um asteroide
+        for explosion in list_explosion:
+            if asteroid.Colide(explosion.x,explosion.y,explosion.ray):
+                asteroids_killed+=1
+                print(asteroids_killed)
+                break
 
 def main():
     x = 0
     y = 0
-    cond = 60 #Dificuldade, quanto mais perto do 0, mais asteroids aparecem
+    cond = 20 #Dificuldade, quanto mais perto do 0, mais asteroids aparecem
     global list_asteroids
     global list_explosion
     while True:
@@ -70,10 +80,13 @@ def main():
             elif event.type == pg.MOUSEBUTTONDOWN:
                 x, y = pg.mouse.get_pos()
                 x, y = tela_for_mundo(x,HEIGHT-y)
-                if y > -5:
+                if y > -HEIGHT_WORLD/4:
                     Explosion(x=x,y=y)
-        
         
         draw(x,HEIGHT-y)
         CLOCK.tick(60)
+        if life == 0:
+            print('você perdeu!')
+            sleep(2)
+            quit()
         
