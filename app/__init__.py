@@ -11,7 +11,7 @@ from app.explosion import Explosion, list_explosion
 from app.asteroids import Asteroids, list_asteroids
 from app.colision import list_colision
 from app.scenario import scenario
-
+from app.scoreboard import draw_scoreboard
 #configurações iniciais
 pg.init()
 pg.display.set_caption('Missile Command')
@@ -53,14 +53,13 @@ def draw(x,y):
   
     for colision in list_colision: #Atualiza o Status das colisões
         colision.update()
-    
+    draw_scoreboard(asteroids_killed,-9.5,9.5)
     pg.display.flip()#atualiza toda a tela
     
     for asteroid in list_asteroids: #Checa se uma explosão atingiu um asteroide
         for explosion in list_explosion:
             if asteroid.Colide(explosion.x,explosion.y,explosion.ray):
                 asteroids_killed+=1
-                print(asteroids_killed)
                 break
 
 def main():
