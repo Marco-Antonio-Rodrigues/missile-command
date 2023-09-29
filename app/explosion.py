@@ -38,7 +38,7 @@ class Explosion():
   
     glPushMatrix() #salvando a atual matriz de transformaÃ§Ã£o
     glTranslatef(pos_x,pos_y,0)
-    glScalef(self.ray/2,self.ray/2,1)           #matriz de escala uniforme para triplicar o tamanho do hexÃ¡gono
+    glScalef(self.ray/2,self.ray/2,1) #matriz de escala uniforme
     
     glBegin(GL_POLYGON)
     for i in range(0,self.edges):
@@ -48,9 +48,8 @@ class Explosion():
         glVertex2f(x,y)
     
     glEnd()
-    glPopMatrix()             #carregando a Ãºltima matriz de transformaÃ§Ã£o salva
+    glPopMatrix()#carregando a última matriz de transformaÃ§Ã£o salva
     glFlush() #Todas as instruções anteriores apenas indicaram o que deve ser feito. Essa Ã© a ordem pra GPU redesenhar com as informaÃ§Ãµes enviadas
-  
   
   def half_draw(self,pos_x=None,pos_y=None,ray=None,edges = None):
     if pos_x:
@@ -89,7 +88,6 @@ class Explosion():
     glFlush() #Todas as instruções anteriores apenas indicaram o que deve ser feito. Essa Ã© a ordem pra GPU redesenhar com as informaÃ§Ãµes enviadas
   
     
- 
   def update(self):
     if self.ray < 1:
       self.ray+=0.002

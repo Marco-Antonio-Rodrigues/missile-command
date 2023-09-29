@@ -45,6 +45,7 @@ def draw(x,y):
         for asteroid in list_asteroids:
             if explosion.Colide(asteroid):
                 list_asteroids.remove(asteroid)#Remove asteroide atingido
+                del asteroid
                 
     for asteroid in list_asteroids:
         if asteroid.Colide():
