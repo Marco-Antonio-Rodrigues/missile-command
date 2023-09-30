@@ -6,34 +6,84 @@ from OpenGL.GLU import *
 from time import sleep
 from random import randint
 
-
 from app.explosion import Explosion, list_explosion
 from app.asteroids import Asteroids, list_asteroids
 from app.colision import list_colision
-from app.scenario import scenario
 from app.scoreboard import draw_scoreboard
+from app.contants import HEIGHT,WIDTH,HEIGHT_WORLD,WIDTH_WORLD
+from app.utils import load_texture,tela_for_mundo
 #configurações iniciais
 pg.init()
 pg.display.set_caption('Missile Command')
 pg.mouse.set_cursor(*pg.cursors.diamond)
 CLOCK = pg.time.Clock()
-
-WIDTH = 600
-HEIGHT = 600
-WIDTH_WORLD = 20
-HEIGHT_WORLD = 20
-
 display = (WIDTH, HEIGHT)
 CANVAS = pg.display.set_mode(display, DOUBLEBUF|OPENGL|RESIZABLE)
 
 glOrtho(-WIDTH_WORLD/2,WIDTH_WORLD/2,-HEIGHT_WORLD/2,HEIGHT_WORLD/2,-1,1)
 
-def tela_for_mundo(x_tela, y_tela):
-    x_tela_centro = x_tela - WIDTH / 2
-    y_tela_centro = y_tela - HEIGHT / 2
-    x_mundo = x_tela_centro * (20 / WIDTH)
-    y_mundo = y_tela_centro * (20 / HEIGHT)
-    return x_mundo, y_mundo
+glEnable(GL_TEXTURE_2D)                             #habilitando o uso de texturas
+glEnable(GL_BLEND);                                 #habilitando a funcionalidade de mistura (necessário para objetos transparentes)
+glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)   #definindo como a mistura entre objetos transparência deve ser realizada
+
+texture_galaxy = load_texture('galaxia.jpg')   
+texture_planet = load_texture('planet.jpg')   
+texture_game_over = load_texture('game_over.png') 
+
+def scenario(width,height):  
+    #Desenhando galaxy    
+    glColor((0,0,0))
+    glPushMatrix()
+    glTranslatef(0,height,0)
+    glScalef(width,height+height*0.85,1)
+    glBindTexture(GL_TEXTURE_2D, texture_galaxy)    #tornando a textura 1 ativa 
+    glBegin(GL_QUADS)
+    
+    glTexCoord2f(0,0) ,glVertex3f(-1,-1,1)
+    glTexCoord2f(1,0) ,glVertex3f(1,-1,1)
+    glTexCoord2f(1,1) ,glVertex3f(1,1,1)
+    glTexCoord2f(0,1) ,glVertex3f(-1,1,1)
+    
+    glEnd()
+    glBindTexture(GL_TEXTURE_2D, 0)     #desativando todas as texturas
+    glPopMatrix()
+      
+    #Desenhando Base
+    glColor((1,1,0))
+    glPushMatrix()
+    glTranslatef(0,-height+(height*0.15),0)
+    glScalef(width,height*0.15,1)
+    glBindTexture(GL_TEXTURE_2D, texture_planet)    #tornando a textura 1 ativa 
+    glBegin(GL_QUADS)
+    
+    glTexCoord2f(0,0) ,glVertex3f(-1,-1,1)
+    glTexCoord2f(1,0) ,glVertex3f(1,-1,1)
+    glTexCoord2f(1,1) ,glVertex3f(1,1,1)
+    glTexCoord2f(0,1) ,glVertex3f(-1,1,1)
+    
+    glEnd()
+    glBindTexture(GL_TEXTURE_2D, 0)     #desativando todas as texturas
+    glPopMatrix()
+    glFlush()
+
+def game_over(width,height):
+    #Desenhando game over
+    glColor((1,1,0))
+    glPushMatrix()
+    glScalef(width/4,height/4,1)
+    glBindTexture(GL_TEXTURE_2D, texture_game_over)    #tornando a textura 1 ativa 
+    glBegin(GL_QUADS)
+    
+    glTexCoord2f(0,0) ,glVertex3f(-1,-1,1)
+    glTexCoord2f(1,0) ,glVertex3f(1,-1,1)
+    glTexCoord2f(1,1) ,glVertex3f(1,1,1)
+    glTexCoord2f(0,1) ,glVertex3f(-1,1,1)
+    
+    glEnd()
+    glBindTexture(GL_TEXTURE_2D, 0)#desativando todas as texturas
+    glPopMatrix()
+    glFlush()
+    pg.display.flip()
 
 asteroids_killed = 0
 life = 100
@@ -42,7 +92,6 @@ def draw(x,y):
     global asteroids_killed, life
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT) #limpa a tela
     scenario(WIDTH_WORLD/2,HEIGHT_WORLD/2)
-    
     for explosion in list_explosion: #Atualiza o Status das Explosoes
         explosion.update()
     
@@ -85,7 +134,8 @@ def main():
         draw(x,HEIGHT-y)
         CLOCK.tick(60)
         if life == 0:
+            game_over(WIDTH_WORLD,HEIGHT_WORLD)
             print('você perdeu!')
-            sleep(2)
+            sleep(5)
             quit()
         
