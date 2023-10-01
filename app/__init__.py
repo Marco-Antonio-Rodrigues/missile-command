@@ -10,6 +10,7 @@ from app.explosion import Explosion, list_explosion
 from app.asteroids import Asteroids, list_asteroids
 from app.colision import list_colision
 from app.scoreboard import draw_scoreboard
+from app.hp import draw_lifeboard
 from app.contants import HEIGHT,WIDTH,HEIGHT_WORLD,WIDTH_WORLD
 from app.utils import load_texture,tela_for_mundo
 #configurações iniciais
@@ -99,6 +100,7 @@ def draw(x,y):
         if asteroid.update():
             life -= 20
             print(life)
+    draw_lifeboard(life, 7.0,9.5)
   
     for colision in list_colision: #Atualiza o Status das colisões
         colision.update()
