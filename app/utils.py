@@ -1,9 +1,8 @@
-from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from PIL import Image
 
-from app.contants import HEIGHT,WIDTH
+from app.constants import HEIGHT,WIDTH
 
 def load_texture(filename):
     #carregamento da textura feita pelo módulo PIL
