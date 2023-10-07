@@ -101,7 +101,7 @@ def draw(x,y, explo, impact):
     
     for asteroid in list_asteroids: #Atualiza o Status dos Asteroides
         if asteroid.update():
-            impact.play()
+            impact.play() #toca o som do impacto do asteroide na terra
             life -= 20
             
     for colision in list_colision: #Atualiza o Status das colisões
@@ -113,22 +113,26 @@ def draw(x,y, explo, impact):
     for asteroid in list_asteroids: #Checa se uma explosão atingiu um asteroide
         for missile in list_missile:
             if asteroid.Colide(missile.x,missile.y,missile.ray):
-                explo.play()
+                explo.play() #toca o som da explosao acertando um asteroide
                 asteroids_killed+=1
                 break
 
 def toca_musica():
-    global life, game_over_flag
+    global game_over_flag
     
+    #carrega a musica
     pg.mixer.music.load('audio/mcomeco.mp3')
     pg.mixer.music.play()
     while pg.mixer.music.get_busy():
+        #verifica se deu gameover antes da musica acabar
         if game_over_flag == True:
             pg.mixer.music.stop()
-            
+       
+    #carrega o loop da musica     
     pg.mixer.music.load('audio/mloop.mp3')
     pg.mixer.music.play(-1)
     while pg.mixer.music.get_busy():
+        #verifica se deu gameover antes da musica acabar
         if game_over_flag == True:
             pg.mixer.music.stop()
 
@@ -141,10 +145,12 @@ def main():
     global list_asteroids
     global list_explosion
     global game_over_flag
-    expmis = pg.mixer.Sound('audio/boom12.wav')
+    time_click = 1000
+    last_click = 0
+    expmis = pg.mixer.Sound('audio/boom12.wav') #sons das explosoes
     expast = pg.mixer.Sound('audio/boom10.wav')
     impact = pg.mixer.Sound('audio/boom15.wav')
-    music_thread = threading.Thread(target=toca_musica)
+    music_thread = threading.Thread(target=toca_musica)#cria um thread exclusivo para tocar a musica sem afetar o jogo
     music_thread.start()
     while True:
         if len(list_asteroids) < 20 and randint(-cond,cond) == 0: 
@@ -155,19 +161,23 @@ def main():
                 pg.quit()
                 quit()
             elif event.type == pg.MOUSEBUTTONDOWN:
-                x_tela, y_tela = pg.mouse.get_pos()
-                x_mundo, y_mundo = tela_for_mundo(x_tela,HEIGHT-y_tela)
-                if y_mundo > -HEIGHT_WORLD/2.5:
-                    expmis.play()
-                    Missile(x=x_mundo,y=y_mundo)
+                click_atual = pg.time.get_ticks()
+                #verifica se ja passou o intervalo do ultimo clique
+                if click_atual - last_click >= time_click:
+                    last_click = click_atual
+                    x_tela, y_tela = pg.mouse.get_pos()
+                    x_mundo, y_mundo = tela_for_mundo(x_tela,HEIGHT-y_tela)
+                    if y_mundo > -HEIGHT_WORLD/2.5:
+                        expmis.play()#toca o som da explosao 
+                        Missile(x=x_mundo,y=y_mundo)
         
-        draw(x_tela,HEIGHT-y_tela, expast, impact)
+        draw(x_tela,HEIGHT-y_tela, expast, impact)#os sons passados para funcao desenha onde tem as verificacoes
         CLOCK.tick(60)
         if life == 0:
-            game_over_flag = True
+            game_over_flag = True #verificador para fazer a musica do jogo parar
             game_over(WIDTH_WORLD,HEIGHT_WORLD)
-            pg.mixer.music.load('audio/mgameover.mp3')
+            pg.mixer.music.load('audio/mgameover.mp3')#toca musica de gameover
             pg.mixer.music.play()
-            sleep(5)
+            sleep(5)#deixar em 5 segundos, pois eh a duracao da musica de gameover
             quit()
         
