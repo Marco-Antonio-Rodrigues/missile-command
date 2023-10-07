@@ -1,4 +1,5 @@
 import pygame as pg
+import threading
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -22,7 +23,7 @@ CANVAS = pg.display.set_mode(display, DOUBLEBUF|OPENGL|RESIZABLE)
 
 asteroids_killed = 0
 life = 100
-
+game_over_flag = False
 glOrtho(-WIDTH_WORLD/2,WIDTH_WORLD/2,-HEIGHT_WORLD/2,HEIGHT_WORLD/2,-1,1)
 
 glEnable(GL_TEXTURE_2D)                             #habilitando o uso de texturas
@@ -89,7 +90,7 @@ def game_over(width,height):
     pg.display.flip()
 
 
-def draw(x,y):
+def draw(x,y, explo, impact):
     global asteroids_killed, life
     pg.display.flip()#atualiza toda a tela
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT) #limpa a tela
@@ -100,6 +101,7 @@ def draw(x,y):
     
     for asteroid in list_asteroids: #Atualiza o Status dos Asteroides
         if asteroid.update():
+            impact.play()
             life -= 20
             
     for colision in list_colision: #Atualiza o Status das colisões
@@ -111,8 +113,24 @@ def draw(x,y):
     for asteroid in list_asteroids: #Checa se uma explosão atingiu um asteroide
         for missile in list_missile:
             if asteroid.Colide(missile.x,missile.y,missile.ray):
+                explo.play()
                 asteroids_killed+=1
                 break
+
+def toca_musica():
+    global life, game_over_flag
+    
+    pg.mixer.music.load('audio/mcomeco.mp3')
+    pg.mixer.music.play()
+    while pg.mixer.music.get_busy():
+        if game_over_flag == True:
+            pg.mixer.music.stop()
+            
+    pg.mixer.music.load('audio/mloop.mp3')
+    pg.mixer.music.play(-1)
+    while pg.mixer.music.get_busy():
+        if game_over_flag == True:
+            pg.mixer.music.stop()
 
 def main():
     x_tela = 0
@@ -122,6 +140,12 @@ def main():
     cond = 20 #Dificuldade, quanto mais perto do 0, mais asteroids aparecem
     global list_asteroids
     global list_explosion
+    global game_over_flag
+    expmis = pg.mixer.Sound('audio/boom12.wav')
+    expast = pg.mixer.Sound('audio/boom10.wav')
+    impact = pg.mixer.Sound('audio/boom15.wav')
+    music_thread = threading.Thread(target=toca_musica)
+    music_thread.start()
     while True:
         if len(list_asteroids) < 20 and randint(-cond,cond) == 0: 
             Asteroids()
@@ -134,12 +158,16 @@ def main():
                 x_tela, y_tela = pg.mouse.get_pos()
                 x_mundo, y_mundo = tela_for_mundo(x_tela,HEIGHT-y_tela)
                 if y_mundo > -HEIGHT_WORLD/2.5:
+                    expmis.play()
                     Missile(x=x_mundo,y=y_mundo)
         
-        draw(x_tela,HEIGHT-y_tela)
+        draw(x_tela,HEIGHT-y_tela, expast, impact)
         CLOCK.tick(60)
         if life == 0:
+            game_over_flag = True
             game_over(WIDTH_WORLD,HEIGHT_WORLD)
-            sleep(3)
+            pg.mixer.music.load('audio/mgameover.mp3')
+            pg.mixer.music.play()
+            sleep(5)
             quit()
         
