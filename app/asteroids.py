@@ -5,6 +5,7 @@ import math
 import random
 from app.colision import Colision
 from app.constants import WIDTH_WORLD,HEIGHT_WORLD
+from app.missile import Missile
 
 list_asteroids = []
 
@@ -32,10 +33,9 @@ class Asteroids():
         
     glColor((1,1,1))
     
-    glPushMatrix() #salvando a atual matriz de transformaÃ§Ã£o
+    glPushMatrix() 
     glTranslatef(pos_x,pos_y,0)
-    glScalef(self.ray/2,self.ray/2,1) #matriz de escala uniforme
-    
+    glScalef(self.ray/2,self.ray/2,1)                                    #matriz de escala uniforme
     glBegin(GL_POLYGON)
     for i in range(0,self.edges):
         ang = i * (2.0* math.pi/self.edges)
@@ -44,15 +44,16 @@ class Asteroids():
         glVertex2f(x,y)
     
     glEnd()
-    glPopMatrix()#carregando a última matriz de transformaÃ§Ã£o salva
-    glFlush() #Todas as instruções anteriores apenas indicaram o que deve ser feito. Essa Ã© a ordem pra GPU redesenhar com as informaÃ§Ãµes enviadas
+    glPopMatrix()
+    glFlush()                 
   
-  def Colide(self,x=None,y=None,ray=None):
+  def Colide(self,x=None,y=None,ray=None):                              #Checa se o asteroide colidiu e o remove
     if x and y and ray:
       distance = math.sqrt((self.x - x) ** 2 + (self.y - y) ** 2)
       if distance < self.ray or distance < ray:
         Colision(self.x,self.y-self.ray/2)
-        list_asteroids.remove(self)#Remove asteroide atingido
+        Missile(self.x,self.y-self.ray/2)
+        list_asteroids.remove(self)
         del self
         return True
     return False
@@ -62,8 +63,8 @@ class Asteroids():
       self.y-=0.02
       self.draw()
       return False
-    else:
+    else:                                                                 #Se colidiu com a terra
       Colision(self.x,self.y-self.ray)
-      list_asteroids.remove(self)#Remove asteroide atingido
+      list_asteroids.remove(self)
       del self
       return True

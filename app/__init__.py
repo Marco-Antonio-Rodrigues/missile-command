@@ -13,6 +13,8 @@ from app.colision import list_colision
 from app.status_panel import draw_scoreboard,draw_hp
 from app.constants import HEIGHT,WIDTH,HEIGHT_WORLD,WIDTH_WORLD
 from app.utils import load_texture,tela_for_mundo
+
+
 #configurações iniciais
 pg.init()
 pg.display.set_caption('Missile Command')
@@ -21,9 +23,7 @@ CLOCK = pg.time.Clock()
 display = (WIDTH, HEIGHT)
 CANVAS = pg.display.set_mode(display, DOUBLEBUF|OPENGL|RESIZABLE)
 
-asteroids_killed = 0
-life = 100
-game_over_flag = False
+
 glOrtho(-WIDTH_WORLD/2,WIDTH_WORLD/2,-HEIGHT_WORLD/2,HEIGHT_WORLD/2,-1,1)
 
 glEnable(GL_TEXTURE_2D)                             #habilitando o uso de texturas
@@ -33,6 +33,8 @@ glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)   #definindo como a mistura en
 texture_galaxy = load_texture('images/galaxia.png')   
 texture_planet = load_texture('images/planet.png')   
 texture_game_over = load_texture('images/game_over.png') 
+
+
 
 expmis = pg.mixer.Sound('audio/boom12.wav') #sons das explosoes
 expast = pg.mixer.Sound('audio/boom10.wav')
@@ -85,6 +87,8 @@ def scenario(width,height):
     glPopMatrix()
     glFlush()
 
+
+
 def game_over(width,height):
     #Desenhando game over
     glColor((1,1,0))
@@ -103,6 +107,7 @@ def game_over(width,height):
     glPopMatrix()
     glFlush()
     pg.display.flip()
+
 
 def draw():
     global asteroids_killed, life
@@ -131,6 +136,8 @@ def draw():
                 asteroids_killed+=1
                 break
 
+
+
 def toca_musica():
     global game_over_flag
     
@@ -151,20 +158,48 @@ def toca_musica():
             pg.mixer.music.stop()
             
 music_thread = threading.Thread(target=toca_musica)#cria um thread exclusivo para tocar a musica sem afetar o jogo
+            
+            
+            
+asteroids_killed = 0
+life = 100
+game_over_flag = False
 
 def main():
     x_tela = 0
     y_tela = 0
     x_mundo = 0
     y_mundo = 0
-    cond = 20 #Dificuldade, quanto mais perto do 0, mais asteroids aparecem
+    cond = 40 #Dificuldade, quanto mais perto do 0, mais asteroids aparecem
+    dif = 0 #Variável auxiliar, para aumentar a dificuldade
+    
     global list_asteroids
-    global list_explosion
+    #global list_explosion
+    global list_missile
     global game_over_flag
+    global asteroids_killed 
+    global life
+    
     time_click = 1000
     last_click = 0
     music_thread.start()
+    over = 0
     while True:
+        
+        if(over):       #Checa se o jogo acabou, para reiniciar
+            list_asteroids.clear()
+            list_missile.clear()
+            game_over_flag = False
+            asteroids_killed = 0
+            life = 100
+            cond = 40
+            over=0
+        
+        if (asteroids_killed == dif + 20): #A cada 20 asteroides destruidos o jogo aumenta sua dificuldade
+            cond = cond-2
+            dif = dif + 20
+            
+        
         if len(list_asteroids) < 20 and randint(-cond,cond) == 0: 
             Asteroids()
             
@@ -195,6 +230,6 @@ def main():
             game_over(WIDTH_WORLD,HEIGHT_WORLD)
             pg.mixer.music.load('audio/mgameover.mp3')#toca musica de gameover
             pg.mixer.music.play()
-            sleep(5)#deixar em 5 segundos, pois eh a duracao da musica de gameover
-            quit()
-        
+            sleep(4.5)#deixar em 5 segundos, pois eh a duracao da musica de gameover
+            #quit()
+            over = 1 

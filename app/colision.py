@@ -30,14 +30,14 @@ class Colision():
     
     colors_list = [(1,0,0),(0.4,0,0),(0.2,0,0),(1,0.5,0)]
 
-    glPushMatrix() #salvando a atual matriz de transformaÃ§Ã£o
+    glPushMatrix() 
     glTranslatef(pos_x,pos_y,0)
     glRotatef(self.rotate,1, 1, 1)
   
-    glPointSize(particle_size)  # Define o tamanho das partículas
-    glColor3fv((1, 0, 0))  # Cor das partículas (vermelho)
+    glPointSize(particle_size)                                         # Define o tamanho das partículas
+    glColor3fv((1, 0, 0))                                              # Cor das partículas (vermelho)
 
-    glBegin(GL_POINTS)
+    glBegin(GL_POINTS)                                                 # Sprite da explosão
     for _ in range(num_particles):
         number_random = random.randint(0,len(colors_list)-1)    
         glColor(colors_list[number_random])
@@ -45,10 +45,10 @@ class Colision():
         glVertex3f(x, y, z)
     glEnd()
   
-    glPopMatrix()#carregando a última matriz de transformaÃ§Ã£o salva
-    glFlush() #Todas as instruções anteriores apenas indicaram o que deve ser feito. Essa Ã© a ordem pra GPU redesenhar com as informaÃ§Ãµes enviadas
+    glPopMatrix()
+    glFlush() 
     
-  def update(self):
+  def update(self):                                                   #Animação da explosão
     if self.rotate < 360:
       self.rotate+=5
       self.draw()
