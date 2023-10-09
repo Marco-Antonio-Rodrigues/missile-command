@@ -32,9 +32,9 @@ class Missile():
     number_random = random.randint(0,len(colors_list)-1)    
     glColor(colors_list[number_random])
   
-    glPushMatrix() #salvando a atual matriz de transformaÃ§Ã£o
+    glPushMatrix() 
     glTranslatef(pos_x,pos_y,0)
-    glScalef(self.ray/2,self.ray/2,1) #matriz de escala uniforme
+    glScalef(self.ray/2,self.ray/2,1)                                       # Matriz de escala uniforme
     
     glBegin(GL_POLYGON)
     for i in range(0,self.edges):
@@ -44,10 +44,10 @@ class Missile():
         glVertex2f(x,y)
     
     glEnd()
-    glPopMatrix()#carregando a última matriz de transformaÃ§Ã£o salva
-    glFlush() #Todas as instruções anteriores apenas indicaram o que deve ser feito. Essa Ã© a ordem pra GPU redesenhar com as informaÃ§Ãµes enviadas
+    glPopMatrix()
+    glFlush() 
   
-  def update(self):
+  def update(self):                                                       # Aumenta o raio de efeito do missil
     if self.ray < 1:
       self.ray+=0.002
       self.draw()
