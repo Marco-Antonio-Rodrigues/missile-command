@@ -230,6 +230,5 @@ def main():
             game_over(WIDTH_WORLD,HEIGHT_WORLD)
             pg.mixer.music.load('audio/mgameover.mp3')#toca musica de gameover
             pg.mixer.music.play()
-            sleep(4.5)#deixar em 5 segundos, pois eh a duracao da musica de gameover
-            #quit()
+            sleep(5)#deixar em 5 segundos, pois eh a duracao da musica de gameover
             over = 1 
