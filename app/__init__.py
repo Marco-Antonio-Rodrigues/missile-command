@@ -34,6 +34,21 @@ texture_galaxy = load_texture('images/galaxia.png')
 texture_planet = load_texture('images/planet.png')   
 texture_game_over = load_texture('images/game_over.png') 
 
+expmis = pg.mixer.Sound('audio/boom12.wav') #sons das explosoes
+expast = pg.mixer.Sound('audio/boom10.wav')
+impact = pg.mixer.Sound('audio/boom15.wav')
+
+def resize_viewport(width_tela,height_tela):
+    global WIDTH,HEIGHT,WIDTH_WORLD,HEIGHT_WORLD
+    
+    WIDTH_WORLD = WIDTH_WORLD*width_tela/WIDTH
+    HEIGHT_WORLD = HEIGHT_WORLD*width_tela/(16/9)/HEIGHT
+    WIDTH = width_tela
+    HEIGHT = height_tela
+    glViewport(0, 0, int(WIDTH),int(HEIGHT))
+    glLoadIdentity()
+    glOrtho(-WIDTH_WORLD/2,WIDTH_WORLD/2,-HEIGHT_WORLD/2,HEIGHT_WORLD/2,-1,1)
+
 def scenario(width,height):  
     #Desenhando galaxy    
     glColor((0,0,0))
@@ -89,8 +104,7 @@ def game_over(width,height):
     glFlush()
     pg.display.flip()
 
-
-def draw(x,y, explo, impact):
+def draw():
     global asteroids_killed, life
     pg.display.flip()#atualiza toda a tela
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT) #limpa a tela
@@ -107,13 +121,13 @@ def draw(x,y, explo, impact):
     for colision in list_colision: #Atualiza o Status das colisões
         colision.update()
         
-    draw_hp(life, 7.0,9.5)
-    draw_scoreboard(asteroids_killed,-9.5,9.5)
+    draw_scoreboard(asteroids_killed,-WIDTH_WORLD/2*0.95,HEIGHT_WORLD/2*0.95)
+    draw_hp(life, WIDTH_WORLD/2*0.8,HEIGHT_WORLD/2*0.95)
     
     for asteroid in list_asteroids: #Checa se uma explosão atingiu um asteroide
         for missile in list_missile:
             if asteroid.Colide(missile.x,missile.y,missile.ray):
-                explo.play() #toca o som da explosao acertando um asteroide
+                expmis.play() #toca o som da explosao acertando um asteroide
                 asteroids_killed+=1
                 break
 
@@ -135,6 +149,8 @@ def toca_musica():
         #verifica se deu gameover antes da musica acabar
         if game_over_flag == True:
             pg.mixer.music.stop()
+            
+music_thread = threading.Thread(target=toca_musica)#cria um thread exclusivo para tocar a musica sem afetar o jogo
 
 def main():
     x_tela = 0
@@ -147,10 +163,6 @@ def main():
     global game_over_flag
     time_click = 1000
     last_click = 0
-    expmis = pg.mixer.Sound('audio/boom12.wav') #sons das explosoes
-    expast = pg.mixer.Sound('audio/boom10.wav')
-    impact = pg.mixer.Sound('audio/boom15.wav')
-    music_thread = threading.Thread(target=toca_musica)#cria um thread exclusivo para tocar a musica sem afetar o jogo
     music_thread.start()
     while True:
         if len(list_asteroids) < 20 and randint(-cond,cond) == 0: 
@@ -160,7 +172,8 @@ def main():
             if event.type == pg.QUIT:
                 pg.quit()
                 quit()
-            elif event.type == pg.MOUSEBUTTONDOWN:
+                
+            if event.type == pg.MOUSEBUTTONDOWN:
                 click_atual = pg.time.get_ticks()
                 #verifica se ja passou o intervalo do ultimo clique
                 if click_atual - last_click >= time_click:
@@ -170,8 +183,12 @@ def main():
                     if y_mundo > -HEIGHT_WORLD/2.5:
                         expmis.play()#toca o som da explosao 
                         Missile(x=x_mundo,y=y_mundo)
-        
-        draw(x_tela,HEIGHT-y_tela, expast, impact)#os sons passados para funcao desenha onde tem as verificacoes
+                        
+            if event.type == pg.VIDEORESIZE:
+                width, height = event.size
+                resize_viewport(width,height)
+     
+        draw()
         CLOCK.tick(60)
         if life == 0:
             game_over_flag = True #verificador para fazer a musica do jogo parar

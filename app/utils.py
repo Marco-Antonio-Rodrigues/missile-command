@@ -2,7 +2,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from PIL import Image
 
-from app.constants import HEIGHT,WIDTH
+from app.constants import HEIGHT,WIDTH,HEIGHT_WORLD,WIDTH_WORLD
 
 def load_texture(filename):
     #carregamento da textura feita pelo módulo PIL
@@ -25,6 +25,6 @@ def load_texture(filename):
 def tela_for_mundo(x_tela, y_tela):
     x_tela_centro = x_tela - WIDTH / 2
     y_tela_centro = y_tela - HEIGHT / 2
-    x_mundo = x_tela_centro * (20 / WIDTH)
-    y_mundo = y_tela_centro * (20 / HEIGHT)
+    x_mundo = x_tela_centro * (WIDTH_WORLD / WIDTH)
+    y_mundo = y_tela_centro * (HEIGHT_WORLD / HEIGHT)
     return x_mundo, y_mundo

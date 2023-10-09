@@ -4,13 +4,14 @@ from OpenGL.GLU import *
 import math
 import random
 from app.colision import Colision
+from app.constants import WIDTH_WORLD,HEIGHT_WORLD
 
 list_asteroids = []
 
 class Asteroids():
   
   def __init__(self):
-    self.x = random.randint(-9,9)
+    self.x = random.randint(-((WIDTH_WORLD/2)-1),WIDTH_WORLD/2-1)
     self.y = 10
     self.ray = 0.4 * random.randint(1,2)
     self.edges = 36
@@ -57,7 +58,7 @@ class Asteroids():
     return False
   
   def update(self):
-    if self.y > -8:
+    if self.y > -HEIGHT_WORLD/2*0.8:
       self.y-=0.02
       self.draw()
       return False
