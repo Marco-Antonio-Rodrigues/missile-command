@@ -42,14 +42,11 @@ impact = pg.mixer.Sound('audio/boom15.wav')
 
 def resize_viewport(width_tela,height_tela):
     global WIDTH,HEIGHT,WIDTH_WORLD,HEIGHT_WORLD
-    
-    WIDTH_WORLD = WIDTH_WORLD*width_tela/WIDTH
-    HEIGHT_WORLD = HEIGHT_WORLD*width_tela/(16/9)/HEIGHT
-    WIDTH = width_tela
-    HEIGHT = height_tela
     glViewport(0, 0, int(WIDTH),int(HEIGHT))
     glLoadIdentity()
     glOrtho(-WIDTH_WORLD/2,WIDTH_WORLD/2,-HEIGHT_WORLD/2,HEIGHT_WORLD/2,-1,1)
+    
+    
 
 def scenario(width,height):  
     #Desenhando galaxy    
