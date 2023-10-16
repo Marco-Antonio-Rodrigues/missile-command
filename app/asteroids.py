@@ -66,7 +66,7 @@ class Asteroids():
       self.draw()
       return False
     else:                                                                 #Se colidiu com a terra
-      Colision(self.x,self.y-self.ray)
+      Colision(self.xaux,self.yaux-self.ray)
       list_asteroids.remove(self)
       del self
       return True

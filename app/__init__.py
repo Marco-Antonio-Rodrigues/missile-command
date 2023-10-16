@@ -40,6 +40,7 @@ expmis = pg.mixer.Sound('audio/boom12.wav') #sons das explosoes
 expast = pg.mixer.Sound('audio/boom10.wav')
 impact = pg.mixer.Sound('audio/boom15.wav')
 
+
 def resize_viewport(width_tela,height_tela):
     global WIDTH,HEIGHT,WIDTH_WORLD,HEIGHT_WORLD
     glViewport(0, 0, int(WIDTH),int(HEIGHT))
@@ -217,4 +218,4 @@ def main():
             pg.mixer.music.load('audio/mgameover.mp3')#toca musica de gameover
             pg.mixer.music.play()
             sleep(5)#deixar em 5 segundos, pois eh a duracao da musica de gameover
-            over = 1 
+            quit() 
