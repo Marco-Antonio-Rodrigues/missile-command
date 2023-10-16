@@ -12,8 +12,10 @@ list_asteroids = []
 class Asteroids():
   
   def __init__(self):
-    self.x = random.randint(-((WIDTH_WORLD/2)-1),WIDTH_WORLD/2-1)
-    self.y = 10
+    self.x = 0
+    self.y = 0
+    self.xaux = random.randint(-((WIDTH_WORLD/2)-1),WIDTH_WORLD/2-1)
+    self.yaux = 10
     self.ray = 0.4 * random.randint(1,2)
     self.edges = 36
     list_asteroids.append(self)
@@ -28,8 +30,8 @@ class Asteroids():
     if edges:
       self.edges = edges
         
-    pos_x = self.x
-    pos_y = self.y
+    pos_x = self.xaux
+    pos_y = self.yaux
         
     glColor((1,1,1))
     
@@ -49,18 +51,18 @@ class Asteroids():
   
   def Colide(self,x=None,y=None,ray=None):                              #Checa se o asteroide colidiu e o remove
     if x and y and ray:
-      distance = math.sqrt((self.x - x) ** 2 + (self.y - y) ** 2)
+      distance = math.sqrt((self.xaux - x) ** 2 + (self.yaux - y) ** 2)
       if distance < self.ray or distance < ray:
-        Colision(self.x,self.y-self.ray/2)
-        Missile(self.x,self.y-self.ray/2)
+        Colision(self.xaux,self.yaux-self.ray/2)
+        Missile(self.xaux,self.yaux-self.ray/2)
         list_asteroids.remove(self)
         del self
         return True
     return False
   
   def update(self):
-    if self.y > -HEIGHT_WORLD/2*0.8:
-      self.y-=0.02
+    if self.yaux > -HEIGHT_WORLD/2*0.8:
+      self.yaux -=0.02
       self.draw()
       return False
     else:                                                                 #Se colidiu com a terra

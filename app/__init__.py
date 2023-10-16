@@ -171,7 +171,6 @@ def main():
     dif = 0 #Variável auxiliar, para aumentar a dificuldade
     
     global list_asteroids
-    #global list_explosion
     global list_missile
     global game_over_flag
     global asteroids_killed 
@@ -180,17 +179,7 @@ def main():
     time_click = 1000
     last_click = 0
     music_thread.start()
-    over = 0
     while True:
-        
-        if(over):       #Checa se o jogo acabou, para reiniciar
-            list_asteroids.clear()
-            list_missile.clear()
-            game_over_flag = False
-            asteroids_killed = 0
-            life = 100
-            cond = 40
-            over=0
         
         if (asteroids_killed == dif + 20): #A cada 20 asteroides destruidos o jogo aumenta sua dificuldade
             cond = cond-2
